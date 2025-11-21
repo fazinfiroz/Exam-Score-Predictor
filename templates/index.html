@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Exam Score Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>📘 Exam Score Predictor</h1>
+        <form method="POST" action="/predict">
+            <label for="study_hours">Study Hours:</label>
+            <input type="number" step="any" name="study_hours" required>
+
+            <label for="attendance">Attendance (%):</label>
+            <input type="number" step="any" name="attendance" required>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction is not none %}
+        <div class="result">
+            <h2>Predicted Score: <span>{{ prediction }}</span></h2>
+            <canvas id="chart"></canvas>
+        </div>
+
+        <script>
+            const ctx = document.getElementById('chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Study Hours', 'Attendance', 'Predicted Score'],
+                    datasets: [{
+                        label: 'Student Stats',
+                        data: [{{ study_hours }}, {{ attendance }}, {{ prediction }}],
+                        backgroundColor: ['#2980b9', '#27ae60', '#e74c3c']
+                    }]
+                }
+            });
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>
